@@ -12,7 +12,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 @router.post("/")
 def create_user(user: UserSchema, db: Session = Depends(get_db)):
     user_repo = UserRepo(db)
-    new_user = User(**user.dict())
+    new_user = User(**user.model_dump())
     user_repo.add_user(new_user)
     return new_user
 
