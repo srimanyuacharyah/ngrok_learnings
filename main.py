@@ -1,63 +1,58 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
 
 app = FastAPI()
-students=[]
+
+students: List["Student"] = []
+
+
 class Student(BaseModel):
     name: str
     email: str
     age: int
-    Roll_number:int
-    Department:str
+    Roll_number: int
+    Department: str
 
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
-class StudentResponse(Student):
-    id: int
-   
+@app.post("/students")
+def create_student(student: Student):
+    for s in students:
+        if s.Roll_number == student.Roll_number:
+            raise HTTPException(status_code=400, detail="Student already exists")
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-def create_student(student:Student)->StudentResponse:
     students.append(student)
     return student
-def get_student_by_roll(roll):
-    for student in students:
-        if student.Roll_number == roll:
-            return student
-    
-
-def read_student(roll:int)->StudentResponse:
-    return get_student_by_roll(roll)
-
-
-def update_student(roll:int,student:Student)->StudentResponse:
-    return StudentResponse(roll=roll, **student.dict())
-
-def delete_student(roll:int):
-    return StudentResponse(roll=roll, **student.dict())
-
 @app.get("/students")
 def read_students():
     return students
-@app.post("/students")
-def create_student_api(student:Student):
-    return create_student(student)
 
 @app.get("/students/{roll}")
-def read_student_api(roll:int):
-    return read_student(roll)
+def read_student(roll: int):
+    for student in students:
+        if student.Roll_number == roll:
+            return student
+
+    raise HTTPException(status_code=404, detail="Student not found")
 
 @app.put("/students/{roll}")
-def update_student_api(roll:int,student:Student):
-    return update_student(roll,student)
+def update_student(roll: int, updated_student: Student):
+    for index, student in enumerate(students):
+        if student.Roll_number == roll:
+            students[index] = updated_student
+            return updated_student
+
+    raise HTTPException(status_code=404, detail="Student not found")
 
 @app.delete("/students/{roll}")
-def delete_student_api(roll:int):
-    return delete_student(roll)
+def delete_student(roll: int):
+    for index, student in enumerate(students):
+        if student.Roll_number == roll:
+            students.pop(index)
+            return {"message": "Student deleted successfully"}
+
+    raise HTTPException(status_code=404, detail="Student not found")
