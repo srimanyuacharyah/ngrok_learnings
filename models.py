@@ -1,13 +1,29 @@
 from db import Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column,Integer,String,DateTime,Text
+from datetime import datetime
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__="users"
+    id=Column(Integer,primary_key=True,index=True)
+    email=Column(String,index=True)
+    password=Column(String)
+    api_key=Column(String)
+    user_name=Column(String,index=True)
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
-    age = Column(Integer, nullable=False)
-    Roll_number = Column(Integer, unique=True, index=True, nullable=False)
-    Department = Column(String, nullable=False)
-    api_key = Column(String)
+class address(Base):
+    __tablename__="addresses"
+    id=Column(Integer,primary_key=True,index=True)
+    address_line=Column(String,index=True)
+    city=Column(String,index=True)
+    state=Column(String,index=True)
+    pincode=Column(String,index=True)
+    zip_code=Column(String,index=True)
+
+class order(Base):
+    __tablename__="orders"
+    id=Column(Integer,primary_key=True,index=True)
+    user_id=Column(Integer,index=True)
+    address_id=Column(Integer,index=True)
+    order_date=Column(DateTime,index=True)
+    total_amount=Column(Integer,index=True) 
+    status=Column(String,index=True)       

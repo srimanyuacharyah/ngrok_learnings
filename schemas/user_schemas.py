@@ -1,14 +1,11 @@
 from pydantic import BaseModel
 
 class UserSchema(BaseModel):
-    name: str
-    email: str
-    age: int
-    Roll_number: int
-    Department: str
+    email:str
+    password:str
+    
+class UserUpdateApiKey(BaseModel):
+    api_key:str
 
-    class Config:
-        from_attributes = True
-
-class UserUpdateAPIKey(BaseModel):
-    api_key: str        
+class user_name(BaseModel):
+    user_name:str

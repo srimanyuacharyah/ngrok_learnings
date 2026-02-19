@@ -1,20 +1,23 @@
 from fastapi import FastAPI
-from contextlib import asynccontextmanager
+from routes.user_routes import router as user_router
+from sqlalchemy import create_engine
+from db import get_db,DATABASE_URL
+import os
+from models import Base
+app = FastAPI()
 
-from db import engine, Base
-import models
-from routes import user_routes
+#cors
+app.include_router(user_router)
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Create database tables
-    Base.metadata.create_all(bind=engine)
-    yield
+# to create database
 
-app = FastAPI(lifespan=lifespan)
-
-app.include_router(user_routes.router)
+engine = create_engine(DATABASE_URL)
+Base.metadata.create_all(engine)
 
 @app.get("/")
-def read_root():
-    return {"message": "Hello World"}
+def read_root():  
+    return {"Hello": "World"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
