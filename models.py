@@ -10,3 +10,4 @@ class User(Base):
     age = Column(Integer, nullable=False)
     Roll_number = Column(Integer, unique=True, index=True, nullable=False)
     Department = Column(String, nullable=False)
+    api_key = Column(String)

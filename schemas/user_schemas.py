@@ -9,3 +9,6 @@ class UserSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+class UserUpdateAPIKey(BaseModel):
+    api_key: str        
